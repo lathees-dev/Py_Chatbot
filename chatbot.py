@@ -1,6 +1,5 @@
 # import google.generativeai as genai
 # genai.configure(api_key=os.getenv('API_KEY'))
-
 # model = genai.GenerativeModel("gemini-1.5-flash")
 # response = model.generate_content(st.text_input("Enter your prompt:"))
 # st.write(response.text)
@@ -9,14 +8,11 @@ import os
 import streamlit as st
 from typing import Generator
 from groq import Groq
-
 from dotenv import load_dotenv
 import streamlit as st
-
 load_dotenv()
-st.set_page_config( layout="wide",
-                   page_title="Apple Chatbot")
 
+st.set_page_config( layout="wide",page_title="Apple Chatbot")
 
 st.title("🕸️SpiV chatbot")
 st.subheader("",divider="orange", anchor=False)
@@ -24,7 +20,6 @@ st.subheader("",divider="orange", anchor=False)
 client = Groq(
     api_key=os.getenv("GROQ_API_KEY"),
 )
-
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
@@ -34,13 +29,11 @@ for message in st.session_state.messages:
     with st.chat_message(message["role"], avatar=avatar):
         st.markdown(message["content"])
 
-
 def generate_chat_responses(chat_completion) -> Generator[str, None, None]:
     """Yield chat response content from the Groq API response."""
     for chunk in chat_completion:
         if chunk.choices[0].delta.content:
             yield chunk.choices[0].delta.content
-
 
 if prompt := st.chat_input("Enter your prompt here..."):
     st.session_state.messages.append({"role": "user", "content": prompt})
